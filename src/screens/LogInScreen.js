@@ -24,6 +24,7 @@ const LogInScreen = ({navigation}) =>{
     
     const loggingIn = useSelector(state=>state.auth.loggingIn);
     const loginError = useSelector(state=>state.auth.loginError);
+    const loginPayload = useSelector(state=>state.auth.loginPayload);
 
     useEffect(()=>{
         if(loginError!=null){
@@ -31,6 +32,12 @@ const LogInScreen = ({navigation}) =>{
         }
         
     },[loginError])
+
+    useEffect(()=>{
+        if(loginPayload!=null){
+            navigation.navigate("home")
+        }
+    },[loginPayload])
 
     function loginLocal(){
         if(email==null || email==" "){

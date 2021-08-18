@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { DrawerItem, DrawerContentScrollView } from "@react-navigation/drawer";
 import { Drawer } from "react-native-paper";
-import { MaterialCommunityIcons,FontAwesome,FontAwesome5 ,MaterialIcons,Foundation} from "@expo/vector-icons";
+import { MaterialCommunityIcons,FontAwesome,FontAwesome5 ,MaterialIcons,Foundation,Ionicons} from "@expo/vector-icons";
 
 
 
@@ -23,16 +23,16 @@ export default function CustomDrawerContent(props) {
               <FontAwesome name="home" size={size} color={color} />
             )}
             label="Home"
-            onPress={() => {console.log('Home Pressed');props.navigation.navigate('Home')}}
+            onPress={() => {console.log('Home Pressed');props.navigation.navigate('home')}}
           />
                 
             {/*Orders */}    
             <DrawerItem
               icon={({ color, size }) => (
-                <FontAwesome5 name="truck"  size={20} color={color}/>
+                <FontAwesome5 name="seedling" size={24} color="black" />
               )}
-            label="Orders"
-            onPress={() => {console.log('Orders Pressed');props.navigation.navigate('Orders')}}
+            label="Create/Edit Commodity"
+            onPress={() => {console.log('Orders Pressed');props.navigation.navigate('commodity')}}
           />
 
             {/*Create Orders */}    
@@ -40,83 +40,26 @@ export default function CustomDrawerContent(props) {
               icon={({ color, size }) => (
                 <Foundation name="clipboard-notes"  size={size} color={color}/>
               )}
-            label="Create Order"
+            label="Create New Record"
             onPress={() => {console.log('Orders Pressed');props.navigation.navigate('CreateOrder')}}
           />
 
-
-          {/*Payments */}
           <DrawerItem
               icon={({ color, size }) => (
-                <MaterialIcons name="payments" size={size} color={color} />
+                <Ionicons name="people" size={24} color="black" />
               )}
-            label="Payments"
-            onPress={() => {console.log('Paymnets Pressed');props.navigation.navigate('Payments')}}
+            label="Parties"
+            onPress={() => {console.log('Orders Pressed');props.navigation.navigate('CreateOrder')}}
           />
-
-            {/*Uploaded Images or lists */}
-            <DrawerItem
+          <DrawerItem
               icon={({ color, size }) => (
-                <FontAwesome name="list-alt" size={size} color={color}/> 
+                <FontAwesome5 name="people-carry" size={24} color="black" />
               )}
-            label="Uploaded Lists/Images"
-            onPress={() => {console.log('UploadedImages/List Pressed');props.navigation.navigate('ListorImages')}}
-          />
-         
-        </Drawer.Section>
-        
-        <Drawer.Section style={styles.drawerSection}>
-
-          {/*Add Product */}
-          <DrawerItem
-            icon={({ color, size }) => (
-              <MaterialIcons name="post-add" size={size} color={color} />
-            )}
-            label="Add Product"
-            onPress={() => {console.log('Add Product Pressed');props.navigation.navigate("AddProduct")}}
+            label="Commission Agents"
+            onPress={() => {console.log('Orders Pressed');props.navigation.navigate('CreateOrder')}}
           />
 
-          {/*Edit product */}
-          <DrawerItem
-            icon={({ color, size }) => (
-              <MaterialCommunityIcons name="file-document-edit-outline" size={size} color={color} />
-            )}
-            label="Edit/Delete Product"
-            onPress={() => {console.log('Edit Product Pressed');props.navigation.navigate("EditorDelete")}}
-          />
-
-          {/*Slider Images */}
-          <DrawerItem
-            icon={({ color, size }) => (
-              <FontAwesome name="sliders" size={size} color={color} />
-            )}
-            label="Slider Images"
-            onPress={() => {console.log('Slider Images Pressed');props.navigation.navigate("SliderImages")}}
-          />
-
-            {/*Send notifications */}
-           <DrawerItem
-            icon={({ color, size }) => (
-              <MaterialIcons name="category" size={size} color={color} />
-              
-              
-            )}
-            label="CategorySubCategory"
-            onPress={() => {console.log('Send Notification Pressed');props.navigation.navigate("CategorySubCategory")}}
-          />
-
-
-          {/*Create Bill Pressed */}
-          <DrawerItem
-            icon={({ color, size }) => (
-              <MaterialCommunityIcons name="printer-check" size={size} color={color} />
-              
-            )}
-            label="Create Bill"
-            onPress={() => {console.log('Create Bill Pressed');props.navigation.navigate("CreateBill")}}
-          />
-        </Drawer.Section>
-
+          </Drawer.Section>
 
         
       </View>

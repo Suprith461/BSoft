@@ -9,31 +9,63 @@ import React from 'react';
 
 
 import CustomDrawerContent from '../navigation/NavDrawer';
-
-//import AddProduct from './screens/AddProduct'
-
-//import EditorDelete from './screens/EditorDelete'
-//import Home from './screens/Home'
-//import ListorImages from './screens/ListsorImages'
-//import Orders from './screens/Orders'
-//import Payments from './screens/Payments'
-//import CategorySubCategory from './screens/CategorySubCategory'
-//import SliderImages2 from './screens/SliderImages2'
-//import CreateOrder from './screens/CreateOrder';
-
-import LogInScreen from '../screens/LogInScreen'
-//import SignUp from './screens/logsign/SignUpScreen'
-//import VerifyOtpScreen from './screens/logsign/VerifyOtp'
-//import ForgotPassword from './screens/logsign/ForgotPassword'
-//import CreateBill from './screens/bill'
-//import OrderDetails from './screens/OrderDetails';
-//import { color } from 'react-native-reanimated';
+import LogInScreen from '../screens/LogInScreen';
+import HomeScreen from '../screens/HomeScreen';
 
 
 const navWithDrawer = createDrawerNavigator();
 
+const HomeStack=createStackNavigator();
+function HomeStackScreen(){
+  return(
+          <HomeStack.Navigator >
+              <HomeStack.Screen 
+                name="home1" 
+                component={HomeScreen} 
+                options={{headerStyle:{height:0,width:0}}} 
+                  
+                />
+ 
+          </HomeStack.Navigator>
 
+  );
+}
 
+import Commodities from "./../screens/Commodities"
+import CreateCommodity from "./../screens/CreateCommodity"
+import EditCommodity from "./../screens/EditCommodity"
+
+const CommoditiesStack = createStackNavigator();
+function CommoditiesStackScreen(){
+  return(
+    <CommoditiesStack.Navigator>
+
+      <CommoditiesStack.Screen
+        name="commodities"
+        component={Commodities} 
+        options={{headerStyle:{height:0,width:0}}}
+
+      />
+
+      <CommoditiesStack.Screen
+        name="EditCommodity"
+        component={EditCommodity} 
+        options={{headerStyle:{height:0,width:0}}}
+
+      />
+
+      <CommoditiesStack.Screen
+        name="CreateCommodity"
+        component={CreateCommodity} 
+        options={{headerStyle:{height:0,width:0}}}
+
+      />
+      
+
+      
+    </CommoditiesStack.Navigator>
+  );
+}
 
 
 
@@ -44,7 +76,10 @@ export default function NavWithDrawer(){
     
 
         <navWithDrawer.Navigator drawerContent={props => <CustomDrawerContent {...props}/>}>
-          <navWithDrawer.Screen  name = "logIn" component={LogInScreen}  options={{swipeEnabled:false,drawerLabel:null,drawerIcon:null}}/>
+        <navWithDrawer.Screen  name = "commodity" component={CommoditiesStackScreen} options={{title:"Create/Edit commodities",fontSize:28}}/>
+        <navWithDrawer.Screen  name = "home" component={HomeStackScreen} options={{title:"Bsoft",fontSize:28}}/>
+          <navWithDrawer.Screen  name = "logIn" component={LogInScreen}  />
+          
          
       
          
