@@ -1,16 +1,34 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import {View,TextInput,TouchableOpacity,Text,ScrollView,Dimensions, FlatList,Button} from 'react-native';
 import CategoryListComp from '../components/CategoryListComp'
+import {useSelector,useDispatch} from 'react-redux';
+import { fetchParties } from '../redux/partie/partieActions';
+import { fetchCommodities } from '../redux/commodity/commodityActions';
 
 export default function CreateBill({navigation}){
     
     const [partieName,setPartieName] = useState(null);
+    const [commodity,setCommodity] =useState(null)
     const [lorryNo,setLorryNo] = useState(null);
     const [bags,setBags] = useState(null);
     const [quintal,setQuintal]=useState(null);
     const [kg,setKg] = useState(null);
     const [rate,setRate]=useState(null);
     const [tAmount,setTamount]=useState(null)
+    const dispatch = useDispatch();
+
+    const fetchedPartiePayload = useSelector(state=>state.partie.fetchedPartiesPayload);
+    const fetchedCommodityPayload = useSelector(state=>state.commodity.fetchedCommoditiesPayload);
+
+    useEffect(() => {
+        if(fetchedPartiePayload==null){
+            dispatch(fetchParties())
+        }
+        if(fetchedCommodityPayload==null){
+            dispatch(fetchCommodities())
+        }
+        
+    }, [navigation])
 
     const partieList= [
         {id:0,subCategory:"Shakti Traders , Jalagaon" , showAs:"Shakti Traders , Jalagaon"},
@@ -141,11 +159,11 @@ export default function CreateBill({navigation}){
                 <ScrollView style={{flex:0.84,marginHorizontal:20}}>
                     <View style={{height:120 ,marginVertical:10,backgroundColor:"white"}}>
                         <View style={{flex:0.5,marginTop:10}}>
-                            <CategoryListComp selectedItem={partieName} setItem={setPartieName} data={partieList} callback={()=>{}} subCat1="Select the Partie Name"/>
+                            <CategoryListComp selectedItem={partieName} setItem={setPartieName} data={fetchedPartiePayload} callback={()=>{}} subCat1="Select the Partie Name"/>
                         </View>
                         <View style={{flex:0.5,flexDirection:"row"}}>
                             <View style={{flex:0.5}}>
-                                <CategoryListComp selectedItem={partieName} setItem={setPartieName} data={partieList} callback={()=>{}} subCat1="Select the Partie Name"/>
+                                <CategoryListComp selectedItem={commodity} setItem={setCommodity} data={fetchedCommodityPayload} callback={()=>{}} subCat1="Select the Partie Name"/>
                             </View>
                             <View style={{flex:0.5}}>
                                 <TextInput

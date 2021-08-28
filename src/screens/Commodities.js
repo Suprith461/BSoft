@@ -22,6 +22,8 @@ export default function Commodities({navigation}){
       dispatch(fetchCommodities())
     }, [])
 
+    
+
     const subBills= [
         {id:0,commodityName:"Dry pulses",dCommission:5,weighManFee:1,hamali:3},
         {id:1,commodityName:"Oil",dCommission:5,weighManFee:1,hamali:3},

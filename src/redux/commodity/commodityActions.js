@@ -70,8 +70,10 @@ import {CREATE_COMMODITY_REQUEST,CREATE_COMMODITY_SUCCESS,CREATE_COMMODITY_FAILU
             firebase.firestore().collection('commodities')
             .onSnapshot((querySnapshot)=>{
                 const commodities=[]
+                let i = 0;
                 querySnapshot.forEach((doc)=>{
-                    commodities.push(doc.data())
+                    commodities.push({...doc.data(),id:i,subCategory:doc.data().commodityName,showAs:doc.data().commodityName})
+                    i++;
                 })
                 console.log(commodities)
                 dispatch(fetchCommoditiesSuccess(commodities))

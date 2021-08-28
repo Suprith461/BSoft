@@ -1,13 +1,22 @@
 import React ,{useState,useEffect} from 'react';
-import {Text,View,TouchableOpacity,TextInput,FlatList} from 'react-native';
+import {Text,View,TouchableOpacity,TextInput,FlatList,Dimensions,ActivityIndicator} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import {useSelector,useDispatch} from 'react-redux';
+import {fetchParties} from './../redux/partie/partieActions'
+import Modal from 'modal-react-native-web';
 
 
 export default function PartiesScreen({navigation}){
-    
+    const {width,height} = Dimensions.get("screen")
     const [searchName,setSearchName] = useState(null);
+    const dispatch = useDispatch();
+    const loading = useSelector(state=>state.partie.fetchingParties);
+    const fetchedPartiePayload = useSelector(state=>state.partie.fetchedPartiesPayload);
+    
 
-
+    useEffect(() => {
+        dispatch(fetchParties())
+      }, [])
    
 
     const subBills= [
@@ -24,10 +33,10 @@ export default function PartiesScreen({navigation}){
         {id:10,partieName:"Shakti Traders , Jalagaon",place:"jalagaon"}
     ]
 
-    function SubBillItem({partieName,place}){
+    function SubBillItem({partieName,place,pCommission}){
         return(
         <View style={{height:75,marginVertical:5,elevation:10,backgroundColor:"white"}}>
-            <TouchableOpacity style={{flex:1,flexDirection:"row"}} onPress={()=>{navigation.navigate("editPartie",{partieName:partieName,place:place})}}>
+            <TouchableOpacity style={{flex:1,flexDirection:"row"}} onPress={()=>{navigation.navigate("editPartie",{partieName:partieName,place:place,pCommission:pCommission})}}>
                 <View style={{flex:1,paddingVertical:5,paddingHorizontal:10}}>
                     <Text style={{fontSize:22,fontWeight:"500"}}>{partieName}</Text>
                 </View>
@@ -87,16 +96,40 @@ export default function PartiesScreen({navigation}){
 
         {/*Flat List Containing SmallBills */}
         <FlatList
-            data={subBills}
+            data={fetchedPartiePayload}
             showsVerticalScrollIndicator
             ListHeaderComponent={()=>{return(<CreatePartie/>)}} 
             renderItem={({item})=>{        
-                return(<SubBillItem partieName={item.partieName} place={item.place}/>);}}
+                return(<SubBillItem partieName={item.partieName} place={item.partiePlace} pCommission={item.pCommission}/>);}}
             keyExtractor={(item) => item.id}
             style={{marginHorizontal:20,marginVertical:10}}
             
             />
+        <Modal
+            animationType="none"
+            transparent={true}
+            visible={loading}
+              >  
+          <View style={{flex:1,backgroundColor:"#DCDCDC50",alignItems:"center"}}>
+                <View style={{flex:0.1}}></View>
+            <View style={{flex:0.8,width:width,flexDirection:"row"}}>
+                <View style={{flex:0.2}}></View>
+                {/*All the commodities */}
+                <View style={{backgroundColor:"white",flex:0.6}}>
 
+                <ActivityIndicator style={{alignSelf:'center' ,flex:0.6}} size={100} color='orange'/>
+
+                <Text style={{fontSize:20,color:'#DCDCDC' ,fontWeight:'bold',alignSelf:'center'}}> {"Fetching parties...."}</Text>
+
+                </View>
+                <View style={{flex:0.2}}></View>
+                
+                
+            </View>
+            
+            
+          </View>
+        </Modal>
 
     </View>)
 
