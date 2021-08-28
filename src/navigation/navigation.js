@@ -22,12 +22,71 @@ function HomeStackScreen(){
               <HomeStack.Screen 
                 name="home1" 
                 component={HomeScreen} 
-                options={{headerStyle:{height:0,width:0}}} 
+                
                   
                 />
  
           </HomeStack.Navigator>
 
+  );
+}
+
+import PartiesScreen from './../screens/Parties';
+import CreateParty from './../screens/CreateParty'
+import EditParty from './../screens/EditParty'
+const PartiesStack = createStackNavigator()
+function PartiesStackScreen(){
+  return(
+          <PartiesStack.Navigator >
+              <PartiesStack.Screen 
+                name="parties1" 
+                component={PartiesScreen} 
+                
+                  
+                />
+
+          <PartiesStack.Screen 
+                name="createPartie" 
+                component={CreateParty} 
+                
+                  
+                />
+
+
+          <PartiesStack.Screen 
+                name="editPartie" 
+                component={EditParty} 
+                
+                  
+                />
+ 
+          </PartiesStack.Navigator>
+
+  );
+}
+
+
+import CreateBill from './../screens/CreateBill'
+import CreateBillFinal from './../screens/CreateBillFinal';
+const CreateBillStack = createStackNavigator()
+
+function CreateBillStackScreen(){
+  return(
+    <CreateBillStack.Navigator>
+
+      <CreateBillStack.Screen
+        name="createBill1"
+        component={CreateBill}
+      />
+
+      <CreateBillStack.Screen
+        name="createBillFinal"
+        component={CreateBillFinal}
+      />
+
+
+      
+    </CreateBillStack.Navigator>
   );
 }
 
@@ -43,23 +102,27 @@ function CommoditiesStackScreen(){
       <CommoditiesStack.Screen
         name="commodities"
         component={Commodities} 
-        options={{headerStyle:{height:0,width:0}}}
-
-      />
-
-      <CommoditiesStack.Screen
-        name="EditCommodity"
-        component={EditCommodity} 
-        options={{headerStyle:{height:0,width:0}}}
-
+        
       />
 
       <CommoditiesStack.Screen
         name="CreateCommodity"
         component={CreateCommodity} 
-        options={{headerStyle:{height:0,width:0}}}
+        
 
       />
+
+
+      
+
+      <CommoditiesStack.Screen
+        name="EditCommodity"
+        component={EditCommodity} 
+        
+
+      />
+
+      
       
 
       
@@ -76,10 +139,13 @@ export default function NavWithDrawer(){
     
 
         <navWithDrawer.Navigator drawerContent={props => <CustomDrawerContent {...props}/>}>
+        
         <navWithDrawer.Screen  name = "commodity" component={CommoditiesStackScreen} options={{title:"Create/Edit commodities",fontSize:28}}/>
         <navWithDrawer.Screen  name = "home" component={HomeStackScreen} options={{title:"Bsoft",fontSize:28}}/>
-          <navWithDrawer.Screen  name = "logIn" component={LogInScreen}  />
-          
+        <navWithDrawer.Screen  name = "createBill" component={CreateBillStackScreen} options={{title:"Generate Bill",fontSize:28}}/>
+        <navWithDrawer.Screen  name = "parties" component={PartiesStackScreen} options={{title:"Add/Edit partie",fontSize:28}}/>
+        
+        <navWithDrawer.Screen  name = "logIn" component={LogInScreen}  />
          
       
          

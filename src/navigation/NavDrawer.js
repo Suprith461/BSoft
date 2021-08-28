@@ -40,8 +40,8 @@ export default function CustomDrawerContent(props) {
               icon={({ color, size }) => (
                 <Foundation name="clipboard-notes"  size={size} color={color}/>
               )}
-            label="Create New Record"
-            onPress={() => {console.log('Orders Pressed');props.navigation.navigate('CreateOrder')}}
+            label="Create New Bill"
+            onPress={() => {console.log('Orders Pressed');props.navigation.navigate('createBill')}}
           />
 
           <DrawerItem
@@ -49,15 +49,9 @@ export default function CustomDrawerContent(props) {
                 <Ionicons name="people" size={24} color="black" />
               )}
             label="Parties"
-            onPress={() => {console.log('Orders Pressed');props.navigation.navigate('CreateOrder')}}
+            onPress={() => {console.log('Orders Pressed');props.navigation.navigate('parties')}}
           />
-          <DrawerItem
-              icon={({ color, size }) => (
-                <FontAwesome5 name="people-carry" size={24} color="black" />
-              )}
-            label="Commission Agents"
-            onPress={() => {console.log('Orders Pressed');props.navigation.navigate('CreateOrder')}}
-          />
+          
 
           </Drawer.Section>
 
