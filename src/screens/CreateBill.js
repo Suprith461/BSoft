@@ -1,9 +1,10 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useRef} from 'react';
 import {View,TextInput,TouchableOpacity,Text,ScrollView,Dimensions, FlatList,Button} from 'react-native';
 import CategoryListComp from '../components/CategoryListComp'
 import {useSelector,useDispatch} from 'react-redux';
 import { fetchParties } from '../redux/partie/partieActions';
 import { fetchCommodities } from '../redux/commodity/commodityActions';
+import {addSmallBill} from './../redux/finalBill/finalBillActions';
 
 export default function CreateBill({navigation}){
     
@@ -14,7 +15,17 @@ export default function CreateBill({navigation}){
     const [quintal,setQuintal]=useState(null);
     const [kg,setKg] = useState(null);
     const [rate,setRate]=useState(null);
-    const [tAmount,setTamount]=useState(null)
+    const [tAmount,setTamount]=useState(null);
+
+    const [subBillId,setSubBillId] = useState(0);
+
+    const bags_in = useRef()
+    const quint_in = useRef()
+    const kg_in =useRef()
+    const rate_in = useRef()
+
+    const addButton = useRef()
+    
     const dispatch = useDispatch();
 
     const fetchedPartiePayload = useSelector(state=>state.partie.fetchedPartiesPayload);
@@ -30,6 +41,30 @@ export default function CreateBill({navigation}){
         
     }, [navigation])
 
+    function checkSubBillFieldsForInteger(){
+        if(typeof(parseFloat(bags))=='number' &&  typeof(parseFloat(quintal))=='number' && typeof(parseFloat(rate))=='number'){
+            return true
+        }else{
+            return false
+        }
+    }
+
+    function checkSubBillFields(){
+        if(bags !=null && quintal!=null && kg!=null && rate!=null ){
+            if(checkSubBillFieldsForInteger()){
+                return true
+            }else{
+                alert("The entries should be numbers!\n Please enter correct data")
+                return false
+            }
+        }
+        return false
+    }
+    
+    function findSubBillTotal(qui,kg,rate){
+        return ((parseFloat(qui)+parseFloat(kg)/100)*rate)
+
+    }
     const partieList= [
         {id:0,subCategory:"Shakti Traders , Jalagaon" , showAs:"Shakti Traders , Jalagaon"},
         {id:1,subCategory:"Manohar Parikar , Maharastra",showAs:"Manohar Parikar , Maharastra"},
@@ -59,7 +94,8 @@ export default function CreateBill({navigation}){
 
     function showTotal(){
         if(quintal!=null && kg!=null && rate!=null){
-            return((quintal+kg/100)*rate)
+            
+            return((parseFloat(quintal)+parseFloat(kg)/100)*parseFloat(rate))
         }
         return 0
     }
@@ -158,13 +194,17 @@ export default function CreateBill({navigation}){
             <View style={{flex:1}}>
                 <ScrollView style={{flex:0.84,marginHorizontal:20}}>
                     <View style={{height:120 ,marginVertical:10,backgroundColor:"white"}}>
+                        
                         <View style={{flex:0.5,marginTop:10}}>
                             <CategoryListComp selectedItem={partieName} setItem={setPartieName} data={fetchedPartiePayload} callback={()=>{}} subCat1="Select the Partie Name"/>
                         </View>
+                        
                         <View style={{flex:0.5,flexDirection:"row"}}>
+                        
                             <View style={{flex:0.5}}>
-                                <CategoryListComp selectedItem={commodity} setItem={setCommodity} data={fetchedCommodityPayload} callback={()=>{}} subCat1="Select the Partie Name"/>
+                                <CategoryListComp selectedItem={commodity} setItem={setCommodity} data={fetchedCommodityPayload} callback={()=>{}} subCat1="Select the commodity "/>
                             </View>
+                        
                             <View style={{flex:0.5}}>
                                 <TextInput
                                     placeholder="Enter Lorry No"
@@ -191,18 +231,28 @@ export default function CreateBill({navigation}){
                     
 
                 </ScrollView>
+                
                 <View style={{flex:0.18,borderWidth:0.2,borderColor:'#DCDCDC',backgroundColor:'white',marginVertical:15,marginHorizontal:20}}>
+                
                     <View style={{flex:0.5}}>
                         <SubBillComp bags={100+' bags'} quintal={50+' quintal'} kg={20+' kg'} rate={'TOTAL'} total={15847555585.888 +' Rs'} style={{backgroundColor:"orange",borderWidth:0,marginHorizontal:0}}/>
                     </View>
+                
                     <View style={{flex:0.5,flexDirection:'row'}}>
+                
                         <view style={{flex:0.1,marginHorizontal:5,alignSelf:'center'}}>
+                
                             <View style={{flex:1,height:'100%'}}>
+                
                                 <TextInput
                                     style={{paddingHorizontal:5,fontWeight:'500',fontSize:20,paddingVertical:5,borderWidth:0.1,borderColor:'#DCDCDC',backgroundColor:'#f7f6f2'}}
                                     placeholder={"Enter nor of Bags"}
                                     value={bags}
                                     onChangeText={setBags}
+                    
+                                    autoFocus={true}
+                                    returnKeyType={'next'}
+                                    onSubmitEditing={()=>quint_in.current.focus()}
 
                                  />
                             </View>
@@ -215,6 +265,10 @@ export default function CreateBill({navigation}){
                                     placeholder={"Enter Quintals"}
                                     value={quintal}
                                     onChangeText={setQuintal}
+
+                                    ref={quint_in}
+                                    returnKeyType={'next'}
+                                    onSubmitEditing={()=>{kg_in.current.focus()}}
 
                                  />
                             </View>
@@ -229,6 +283,10 @@ export default function CreateBill({navigation}){
                                     value={kg}
                                     onChangeText={setKg}
 
+                                    returnKeyType={'next'}
+                                    ref={kg_in}
+                                    onSubmitEditing={()=>rate_in.current.focus()}
+
                                  />
                             </View>
                             
@@ -242,6 +300,10 @@ export default function CreateBill({navigation}){
                                     value={rate}
                                     onChangeText={setRate}
 
+                                    ref={rate_in}
+                                    returnKeyType={'next'}
+                                    onSubmitEditing={()=>addButton.current.focus()}
+
                                  />
                             </View>
                         </view>
@@ -251,7 +313,24 @@ export default function CreateBill({navigation}){
                                 <Text style={{paddingHorizontal:5,fontWeight:'500',fontSize:20,paddingVertical:5,backgroundColor:'#f7f6f2',borderWidth:0.1,borderColor:'#DCDCDC'}}>{showTotal()}</Text>
                             </View>
                         </view>
-                        <TouchableOpacity style={{flex:0.1,backgroundColor:'orange',alignSelf:'center',margin:5}}>
+                        <TouchableOpacity ref={addButton} style={{flex:0.1,backgroundColor:'orange',alignSelf:'center',margin:5}}
+                            onPress={()=>{
+                                if(checkSubBillFields()){
+                                    if(lorryNo!=null){
+
+                                    
+                                    dispatch(addSmallBill({smallBill:{bags:parseInt(bags),quintal:parseFloat(quintal),kg:parseFloat(kg),rate:parseFloat(rate),total:findSubBillTotal(quintal,kg,rate)},lorryNo:lorryNo}));
+                                   
+                                    }else{
+                                        alert("Enter lorry number and try again!")
+                                    }
+
+                                }else{
+                                    alert("All fields must be filled!\n Fill all the fields and try again.");
+                                    
+                                }
+                                                            }}
+                        >
                             <Text style={{fontSize:20,fontWeight:'500',paddingHorizontal:5,paddingVertical:5,color:'white',alignSelf:'center',paddingVertical:5}}>Add</Text>
                         </TouchableOpacity>
 
