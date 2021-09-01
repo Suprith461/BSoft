@@ -4,7 +4,7 @@ import CategoryListComp from '../components/CategoryListComp'
 import {useSelector,useDispatch} from 'react-redux';
 import { fetchParties } from '../redux/partie/partieActions';
 import { fetchCommodities } from '../redux/commodity/commodityActions';
-import {addSmallBill} from './../redux/finalBill/finalBillActions';
+import {addSmallBill, fetchSmallBills} from './../redux/finalBill/finalBillActions';
 
 export default function CreateBill({navigation}){
     
@@ -19,7 +19,7 @@ export default function CreateBill({navigation}){
 
     const [subBillId,setSubBillId] = useState(0);
 
-    const bags_in = useRef()
+   
     const quint_in = useRef()
     const kg_in =useRef()
     const rate_in = useRef()
@@ -30,6 +30,11 @@ export default function CreateBill({navigation}){
 
     const fetchedPartiePayload = useSelector(state=>state.partie.fetchedPartiesPayload);
     const fetchedCommodityPayload = useSelector(state=>state.commodity.fetchedCommoditiesPayload);
+
+
+    const fetchedSmallBills = useSelector(state=>state.finalBill.fetchedSmallBillsPayload);
+    const fetchedSmallBillDoc = useSelector(state=>state.finalBill.fetchedDocPayload);
+    const purchaseTotal = (fetchedSmallBillDoc!=null)?fetchedSmallBillDoc.totalPurchase:{tBags:0,tQuintals:0,tkg:0,totalAmount:0}
 
     useEffect(() => {
         if(fetchedPartiePayload==null){
@@ -62,7 +67,7 @@ export default function CreateBill({navigation}){
     }
     
     function findSubBillTotal(qui,kg,rate){
-        return ((parseFloat(qui)+parseFloat(kg)/100)*rate)
+        return ((parseFloat(qui)+parseFloat(kg)/100)*rate).toFixed(2)
 
     }
     const partieList= [
@@ -91,6 +96,10 @@ export default function CreateBill({navigation}){
         {id:0,bags:10,quintal:25,kg:2,rate:2500,total:62550},
         {id:0,bags:10,quintal:25,kg:2,rate:2500,total:62550}
     ]
+
+    function calculateTotals(){
+        
+    }
 
     function showTotal(){
         if(quintal!=null && kg!=null && rate!=null){
@@ -221,7 +230,7 @@ export default function CreateBill({navigation}){
                     
                     {/*Sub Bill components */}
                     <FlatList
-                        data={subBills}
+                        data={(fetchedSmallBills!=null)?fetchedSmallBills:[]}
                         ListHeaderComponent={()=>{return(<FlatListHeader />)}}
                         showsVerticalScrollIndicator 
                         renderItem={({item})=>{        
@@ -235,7 +244,7 @@ export default function CreateBill({navigation}){
                 <View style={{flex:0.18,borderWidth:0.2,borderColor:'#DCDCDC',backgroundColor:'white',marginVertical:15,marginHorizontal:20}}>
                 
                     <View style={{flex:0.5}}>
-                        <SubBillComp bags={100+' bags'} quintal={50+' quintal'} kg={20+' kg'} rate={'TOTAL'} total={15847555585.888 +' Rs'} style={{backgroundColor:"orange",borderWidth:0,marginHorizontal:0}}/>
+                        <SubBillComp bags={purchaseTotal.tBags+' bags'} quintal={purchaseTotal.tQuintals+' quintal'} kg={purchaseTotal.tkg+' kg'} rate={'TOTAL'} total={purchaseTotal.totalAmount +' Rs'} style={{backgroundColor:"orange",borderWidth:0,marginHorizontal:0}}/>
                     </View>
                 
                     <View style={{flex:0.5,flexDirection:'row'}}>
@@ -310,7 +319,7 @@ export default function CreateBill({navigation}){
                         
                         <view style={{flex:0.3,marginHorizontal:10,alignSelf:'center'}}>
                             <View style={{flex:1,height:'100%'}}>
-                                <Text style={{paddingHorizontal:5,fontWeight:'500',fontSize:20,paddingVertical:5,backgroundColor:'#f7f6f2',borderWidth:0.1,borderColor:'#DCDCDC'}}>{showTotal()}</Text>
+                                <Text style={{paddingHorizontal:5,fontWeight:'500',fontSize:20,paddingVertical:5,backgroundColor:'#f7f6f2',borderWidth:0.1,borderColor:'#DCDCDC'}}>{showTotal().toFixed(2)}</Text>
                             </View>
                         </view>
                         <TouchableOpacity ref={addButton} style={{flex:0.1,backgroundColor:'orange',alignSelf:'center',margin:5}}
