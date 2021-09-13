@@ -75,7 +75,7 @@ import {CREATE_COMMODITY_REQUEST,CREATE_COMMODITY_SUCCESS,CREATE_COMMODITY_FAILU
                     commodities.push({...doc.data(),id:i,subCategory:doc.data().commodityName,showAs:doc.data().commodityName})
                     i++;
                 })
-                console.log(commodities)
+                //console.log(commodities)
                 dispatch(fetchCommoditiesSuccess(commodities))
 
             })  

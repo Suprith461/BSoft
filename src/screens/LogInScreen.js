@@ -41,7 +41,7 @@ const LogInScreen = ({navigation}) =>{
 
     function loginLocal(){
         if(email==null || email==" "){
-            console.log("Email is empty")
+            //console.log("Email is empty")
            
             alert("Email Field cannot be empty !")
         }else if( password==null || password == " "){
@@ -98,7 +98,7 @@ return(
                 <View style={{flex:0.5}}>
                     <TouchableOpacity
                         onPress={()=>{
-                            console.log("Button Pressed")
+                            //console.log("Button Pressed")
                             //dispatch(logIn(email,password))
                             loginLocal();
                         }} 

@@ -23,7 +23,7 @@ export default function CustomDrawerContent(props) {
               <FontAwesome name="home" size={size} color={color} />
             )}
             label="Home"
-            onPress={() => {console.log('Home Pressed');props.navigation.navigate('home')}}
+            onPress={() => {props.navigation.navigate('home')}}
           />
                 
             {/*Orders */}    
@@ -32,7 +32,7 @@ export default function CustomDrawerContent(props) {
                 <FontAwesome5 name="seedling" size={24} color="black" />
               )}
             label="Create/Edit Commodity"
-            onPress={() => {console.log('Orders Pressed');props.navigation.navigate('commodity')}}
+            onPress={() => {props.navigation.navigate('commodity')}}
           />
 
             {/*Create Orders */}    
@@ -41,7 +41,7 @@ export default function CustomDrawerContent(props) {
                 <Foundation name="clipboard-notes"  size={size} color={color}/>
               )}
             label="Create New Bill"
-            onPress={() => {console.log('Orders Pressed');props.navigation.navigate('createBill')}}
+            onPress={() => {props.navigation.navigate('createBill')}}
           />
 
           <DrawerItem
@@ -49,7 +49,7 @@ export default function CustomDrawerContent(props) {
                 <Ionicons name="people" size={24} color="black" />
               )}
             label="Parties"
-            onPress={() => {console.log('Orders Pressed');props.navigation.navigate('parties')}}
+            onPress={() => {props.navigation.navigate('parties')}}
           />
           
 

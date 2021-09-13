@@ -1,13 +1,15 @@
 import React,{useState,useEffect,useRef} from 'react';
-import {View,TextInput,TouchableOpacity,Text,ScrollView,Dimensions, FlatList,Button} from 'react-native';
+import {View,TextInput,TouchableOpacity,Text,ScrollView,Dimensions, FlatList,Button,ActivityIndicator} from 'react-native';
 import CategoryListComp from '../components/CategoryListComp'
 import {useSelector,useDispatch} from 'react-redux';
 import { fetchParties } from '../redux/partie/partieActions';
 import { fetchCommodities } from '../redux/commodity/commodityActions';
-import {addSmallBill, fetchSmallBills} from './../redux/finalBill/finalBillActions';
+import {addSmallBill, fetchSmallBills, updatePartieBill} from './../redux/finalBill/finalBillActions';
+import Modal from 'modal-react-native-web';
+
 
 export default function CreateBill({navigation}){
-    
+    const {width,height} = Dimensions.get("screen")
     const [partieName,setPartieName] = useState(null);
     const [commodity,setCommodity] =useState(null)
     const [lorryNo,setLorryNo] = useState(null);
@@ -29,13 +31,30 @@ export default function CreateBill({navigation}){
     const dispatch = useDispatch();
 
     const fetchedPartiePayload = useSelector(state=>state.partie.fetchedPartiesPayload);
+    const fetchingPartiePayload = useSelector(state=>state.partie.fetchingParties);
+    const fetchPartieError = useSelector(state=>state.partie.fetchPartiesError);
+
+
+
     const fetchedCommodityPayload = useSelector(state=>state.commodity.fetchedCommoditiesPayload);
+    const fetchingCommodityPayload = useSelector(state=>state.commodity.fetchingCommodities);
+    const fetchCommodityError = useSelector(state=>state.commodity.fetchedCommoditiesError);
 
 
     const fetchedSmallBills = useSelector(state=>state.finalBill.fetchedSmallBillsPayload);
+    const fetchingSmallBills = useSelector(state=>state.finalBill.fetchedSmallBillsPayload);
+    const fetchedSmallBillError = useSelector(state=>state.finalBill.fetchSmallBillsError);
     const fetchedSmallBillDoc = useSelector(state=>state.finalBill.fetchedDocPayload);
+    
     const purchaseTotal = (fetchedSmallBillDoc!=null)?fetchedSmallBillDoc.totalPurchase:{tBags:0,tQuintals:0,tkg:0,totalAmount:0}
 
+    const updatingPartieBill = useSelector(state=>state.finalBill.updatingPartieBill)
+    const updatePartieBillPayload = useSelector(state=>state.finalBill.updatePartieBillPayload)
+    const updatePartieBillFailure = useSelector(state=>state.finalBill.updatePartieBillFailure)
+
+    //console.log("UpdatePArtieBillPayload",updatePartieBillPayload)
+    
+    
     useEffect(() => {
         if(fetchedPartiePayload==null){
             dispatch(fetchParties())
@@ -45,6 +64,13 @@ export default function CreateBill({navigation}){
         }
         
     }, [navigation])
+
+    useEffect(()=>{
+        if(updatePartieBillPayload!=null){
+            navigation.navigate("createBillFinal",{lorryNo:lorryNo});
+        }
+
+    },[updatePartieBillPayload])
 
     function checkSubBillFieldsForInteger(){
         if(typeof(parseFloat(bags))=='number' &&  typeof(parseFloat(quintal))=='number' && typeof(parseFloat(rate))=='number'){
@@ -70,6 +96,20 @@ export default function CreateBill({navigation}){
         return ((parseFloat(qui)+parseFloat(kg)/100)*rate).toFixed(2)
 
     }
+
+
+    function createBillPress(){
+        //console.log("CReate bill pressed",partieName,commodity)
+        if(partieName=="Select the Partie Name"){
+            alert("Please select a partie before proceeding!")
+        }else if(commodity=="Select the commodity"){
+            alert("Please select a commodity to proceed!")
+        }else{
+            dispatch(updatePartieBill({lorryNo:lorryNo,partieName:partieName,commodity:commodity}))
+            
+        }
+    }
+
     const partieList= [
         {id:0,subCategory:"Shakti Traders , Jalagaon" , showAs:"Shakti Traders , Jalagaon"},
         {id:1,subCategory:"Manohar Parikar , Maharastra",showAs:"Manohar Parikar , Maharastra"},
@@ -97,10 +137,7 @@ export default function CreateBill({navigation}){
         {id:0,bags:10,quintal:25,kg:2,rate:2500,total:62550}
     ]
 
-    function calculateTotals(){
-        
-    }
-
+    
     function showTotal(){
         if(quintal!=null && kg!=null && rate!=null){
             
@@ -194,7 +231,7 @@ export default function CreateBill({navigation}){
     navigation.setOptions({title:"Add your purchases",
 
     headerRight: () => (
-        <TouchableOpacity style={{backgroundColor:"orange",margin:5}} onPress={()=>navigation.navigate("createBillFinal")}>
+        <TouchableOpacity style={{backgroundColor:"orange",margin:5}} onPress={()=>{createBillPress()}}>
             <Text style={{color:'white',fontWeight:'500',fontSize:22,paddingVertical:5,paddingHorizontal:15}}>Create Bill</Text>
         </TouchableOpacity>
       ),
@@ -211,7 +248,7 @@ export default function CreateBill({navigation}){
                         <View style={{flex:0.5,flexDirection:"row"}}>
                         
                             <View style={{flex:0.5}}>
-                                <CategoryListComp selectedItem={commodity} setItem={setCommodity} data={fetchedCommodityPayload} callback={()=>{}} subCat1="Select the commodity "/>
+                                <CategoryListComp selectedItem={commodity} setItem={setCommodity} data={fetchedCommodityPayload} callback={()=>{}} subCat1="Select the commodity"/>
                             </View>
                         
                             <View style={{flex:0.5}}>
@@ -345,6 +382,32 @@ export default function CreateBill({navigation}){
 
                     </View>
                 </View>
+                <Modal
+                    animationType="none"
+                    transparent={true}
+                    visible={updatingPartieBill || fetchingPartiePayload || fetchingCommodityPayload}
+                >  
+                <View style={{flex:1,backgroundColor:"#DCDCDC50",alignItems:"center"}}>
+                    <View style={{flex:0.1}}></View>
+                <View style={{flex:0.8,width:width,flexDirection:"row"}}>
+                    <View style={{flex:0.2}}></View>
+                    {/*All the commodities */}
+                    <View style={{backgroundColor:"white",flex:0.6}}>
+
+                        <ActivityIndicator style={{alignSelf:'center' ,flex:0.6}} size={100} color='orange'/>
+
+                        <Text style={{fontSize:20,color:'#DCDCDC' ,fontWeight:'bold',alignSelf:'center'}}> {"Loading...."}</Text>
+
+                    </View>
+                
+                    <View style={{flex:0.2}}></View>
+                
+                
+                    </View>
+            
+            
+                    </View>
+                </Modal>
             </View>
         );
 }

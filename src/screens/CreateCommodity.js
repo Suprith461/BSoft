@@ -12,6 +12,7 @@ export default function CreateCommodity({navigation}){
     const [commodityName,setCommodityName] = useState(null);
     const [weighmanFee,setWeighManFee] = useState(null);
     const [hamali,setHamali]=useState(null);
+    const [sess,setSess] = useState(null)
 
     const dispatch = useDispatch();
     const loading = useSelector(state=>state.commodity.creatingCommodity);
@@ -25,8 +26,8 @@ export default function CreateCommodity({navigation}){
     }, [error,navigation])
 
     function checkFields(){
-        console.log("Indside check fields",commission)
-        if(commission !=null && commodityName!=null && weighmanFee!=null && hamali!=null){
+        //console.log("Indside check fields",commission)
+        if(commission !=null && commodityName!=null && weighmanFee!=null && hamali!=null && sess!=null){
             return true
         }
         return false
@@ -69,13 +70,21 @@ export default function CreateCommodity({navigation}){
                 onChangeText={setHamali}
             />
 
+            <TextInput 
+                style={{marginHorizontal:25,marginVertical:10,backgroundColor:'#f7f6f2',flexDirection:'row',borderRadius:5,padding:6,fontSize:20}}
+                placeholder="Enter sess "
+                textContentType='newPassword'
+                value={sess}
+                onChangeText={setSess}
+            />
+
 
             
 
                 <TouchableOpacity style={{backgroundColor:"orange",alignSelf:"center",paddingVertical:5,paddingHorizontal:40,marginVertical:4,borderRadius:10,elevation:10}}
                     onPress={()=>{
                         if(checkFields()){
-                            dispatch(createCommodity({commodityName:commodityName,dCommission:commission,weighmanFee:weighmanFee,hamali:hamali}))
+                            dispatch(createCommodity({commodityName:commodityName,dCommission:commission,weighmanFee:weighmanFee,hamali:hamali,sess:sess}))
 
                         }else{
                             alert("No fields can be empty!","Please fill all the fields")

@@ -1,6 +1,7 @@
 import {ADD_SMALLBILL_REQUEST,ADD_SMALLBILL_SUCESS,ADD_SMALLBILL_FAILURE,
 FETCH_SMALLBILLS_REQUEST,FETCH_SMALLBILLS_SUCCESS,FETCH_SMALLBILLS_FAILURE,
-FETCH_DOC_REQUEST,FETCH_DOC_SUCCESS,FETCH_DOC_FAILURE
+FETCH_DOC_REQUEST,FETCH_DOC_SUCCESS,FETCH_DOC_FAILURE,
+UPDATE_PARTIE_BILL_REQUEST,UPDATE_PARTIE_BILL_SUCCESS,UPDATE_PARTIE_BILL_FAILURE
 }from './finalBillActionTypes'
 
 const initialState = {
@@ -14,7 +15,11 @@ const initialState = {
 
     fetchingDoc:false,
     fetchedDocPayload:null,
-    fetchDocError:null
+    fetchDocError:null,
+
+    updatingPartieBill:false,
+    updatePartieBillPayload:null,
+    updatePartieBillFailure:null
 }
 
 export default function finalBillReducer(state=initialState,action){
@@ -75,6 +80,27 @@ export default function finalBillReducer(state=initialState,action){
                 ...state,
                 fetchingDoc:false,
                 fetchDocError:action.payload
+            }
+
+        case UPDATE_PARTIE_BILL_REQUEST:
+            return{
+                ...state,
+                updatingPartieBill:true    
+            }
+
+
+        case UPDATE_PARTIE_BILL_SUCCESS:
+            return{
+                ...state,
+                    updatingPartieBill:false,
+                    updatePartieBillPayload:action.payload    
+            }
+
+        case UPDATE_PARTIE_BILL_FAILURE:
+            return{
+                ...state,
+                updatingPartieBill:false,
+                updatePartieBillFailure:action.payload
             }
         default: return state;
     }

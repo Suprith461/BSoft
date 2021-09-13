@@ -13,6 +13,8 @@ export default function EditCommodity({navigation,route}){
     const [commodityName,setCommodityName] = useState(null);
     const [weighmanFee,setWeighManFee] = useState(null);
     const [hamali,setHamali]=useState(null);
+    const [sess,setSess] = useState(null)
+
     const params = route.params;
     const dispatch = useDispatch();
     const loading = useSelector(state=>state.commodity.creatingCommodity);
@@ -25,6 +27,7 @@ export default function EditCommodity({navigation,route}){
             setCommission(params.dCommission);
             setWeighManFee(params.weighManFee)
             setHamali(params.hamali)
+            setSess(params.sess)
         }
     }, [params,navigation])
 
@@ -36,7 +39,7 @@ export default function EditCommodity({navigation,route}){
     }, [error,navigation])
 
     function checkFields(){
-        console.log("Indside check fields",commission)
+        //console.log("Indside check fields",commission)
         if(commission !=null && commodityName!=null && weighmanFee!=null && hamali!=null){
             return true
         }
@@ -80,6 +83,13 @@ export default function EditCommodity({navigation,route}){
                 onChangeText={setHamali}
             />
 
+            <TextInput 
+                style={{marginHorizontal:25,marginVertical:10,backgroundColor:'#f7f6f2',flexDirection:'row',borderRadius:5,padding:6,fontSize:20}}
+                placeholder="Enter Hamali fees "
+                textContentType='newPassword'
+                value={sess}
+                onChangeText={setSess}
+            />
 
            
 

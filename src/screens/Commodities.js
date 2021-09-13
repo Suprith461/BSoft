@@ -31,35 +31,7 @@ export default function Commodities({navigation}){
         {id:3,commodityName:"Oil pulses",dCommission:5,weighManFee:1,hamali:3},
         {id:4,commodityName:"Dry pulses",dCommission:5,weighManFee:1,hamali:3},
     ]
-    const createAndSavePDF = async (html) => {
-        console.log(html)
-        try {
-          const { uri } = await Print.printToFileAsync({ html });
-          if (Platform.OS === "ios") {
-            await Sharing.shareAsync(uri);
-          } else {
-            const permission = await MediaLibrary.requestPermissionsAsync();
-      
-            if (permission.granted) {
-              await MediaLibrary.createAssetAsync(uri);
-            }
-          }
-      
-        } catch (error) {
-          console.error(error);
-        }
-      };
-      const createPDF=async ()=> {
-        let options = {
-          html: '<h1>PDF TEST</h1>',
-          fileName: 'test',
-          directory: 'Documents',
-        };
-    
-        let file = await RNHTMLtoPDF.convert(options)
-        // console.log(file.filePath);
-        alert(file.filePath);
-      }
+  
 
     function CreateCommodity(){
         
@@ -78,11 +50,11 @@ export default function Commodities({navigation}){
 
     
 
-    function SubBillItem({commodityName,dCommission,weighManFee,hamali}){
+    function SubBillItem({commodityName,dCommission,weighManFee,hamali,sess}){
         return(
         <View style={{height:75,marginVertical:5,elevation:10,backgroundColor:"white"}}>
             <TouchableOpacity style={{flex:1,flexDirection:"row"}} onPress={()=>{
-              navigation.navigate("EditCommodity",{commodityName:commodityName,dCommission:dCommission,weighManFee:weighManFee,hamali:hamali})}}>
+              navigation.navigate("EditCommodity",{commodityName:commodityName,dCommission:dCommission,weighManFee:weighManFee,hamali:hamali,sess:sess})}}>
                 <View style={{flex:1,paddingVertical:5,paddingHorizontal:10}}>
                     <Text style={{fontSize:22,fontWeight:"500"}}>{commodityName}</Text>
                 </View>
@@ -102,7 +74,7 @@ export default function Commodities({navigation}){
             data={fetchCommodityPayload}
             showsVerticalScrollIndicator 
             renderItem={({item})=>{        
-                return(<SubBillItem commodityName={item.commodityName} dCommission={item.dCommission} weighManFee={item.weighmanFee} hamali={item.hamali}/>);}}
+                return(<SubBillItem commodityName={item.commodityName} dCommission={item.dCommission} weighManFee={item.weighmanFee} hamali={item.hamali} sess={item.sess}/>);}}
             keyExtractor={(item) => item.id}
             style={{marginHorizontal:20,marginVertical:10}}
             ListHeaderComponent={<CreateCommodity/>}

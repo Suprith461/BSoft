@@ -74,6 +74,7 @@ function CreateBillStackScreen(){
   return(
     <CreateBillStack.Navigator>
 
+
       <CreateBillStack.Screen
         name="createBill1"
         component={CreateBill}
@@ -83,6 +84,9 @@ function CreateBillStackScreen(){
         name="createBillFinal"
         component={CreateBillFinal}
       />
+
+     
+      
 
 
       
@@ -139,13 +143,12 @@ export default function NavWithDrawer(){
     
 
         <navWithDrawer.Navigator drawerContent={props => <CustomDrawerContent {...props}/>}>
-        
-        <navWithDrawer.Screen  name = "commodity" component={CommoditiesStackScreen} options={{title:"Create/Edit commodities",fontSize:28}}/>
-        <navWithDrawer.Screen  name = "home" component={HomeStackScreen} options={{title:"Bsoft",fontSize:28}}/>
-        <navWithDrawer.Screen  name = "createBill" component={CreateBillStackScreen} options={{title:"Generate Bill",fontSize:28}}/>
-        <navWithDrawer.Screen  name = "parties" component={PartiesStackScreen} options={{title:"Add/Edit partie",fontSize:28}}/>
-        
         <navWithDrawer.Screen  name = "logIn" component={LogInScreen}  />
+        <navWithDrawer.Screen  name = "home" component={HomeStackScreen} options={{title:"Bsoft",fontSize:28}}/>
+        <navWithDrawer.Screen  name = "commodity" component={CommoditiesStackScreen} options={{title:"Create/Edit commodities",fontSize:28}}/>
+        <navWithDrawer.Screen  name = "parties" component={PartiesStackScreen} options={{title:"Add/Edit partie",fontSize:28}}/>
+        <navWithDrawer.Screen  name = "createBill" component={CreateBillStackScreen} options={{title:"Generate Bill",fontSize:28}}/>
+        
          
       
          

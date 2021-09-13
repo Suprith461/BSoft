@@ -73,7 +73,7 @@ export function fetchParties(){
                 i++;
 
             })
-            console.log(parties)
+            //console.log(parties)
             dispatch(fetchPartiesSuccess(parties))
         })
     }
