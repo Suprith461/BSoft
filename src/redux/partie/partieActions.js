@@ -69,7 +69,7 @@ export function fetchParties(){
             const parties = []
             let i = 0
             querySnap.forEach((doc)=>{
-                parties.push({...doc.data(),id:i,subCategory:doc.data().partieName+', '+doc.data().partiePlace,showAs:doc.data().partieName+', '+doc.data().partiePlace});
+                parties.push({...doc.data(),id:i,subCategory:doc.data().partieName,partiePlace:doc.data().partiePlace,showAs:doc.data().partieName+', '+doc.data().partiePlace,purchaseCommission:doc.data().pCommission});
                 i++;
 
             })

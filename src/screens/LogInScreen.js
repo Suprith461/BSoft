@@ -10,13 +10,15 @@ import loadingScreen from '../../assets/loading.json';
 import Lottie from "lottie-react";
 import {logIn, loginFailure} from "./../redux/authentication/authActions";
 
-
+import { useDrawerStatus } from '@react-navigation/drawer';
+import { useIsFocused } from '@react-navigation/native';
 
 
 const LogInScreen = ({navigation}) =>{
     const dispatch =useDispatch();
     const hht = Dimensions.get("window").height;
     const wdth = Dimensions.get("window").width;
+    const isFocused = useIsFocused();
 
     
     const [email,setEmail] =useState(null);
@@ -33,8 +35,19 @@ const LogInScreen = ({navigation}) =>{
         
     },[loginError])
 
+    const isDrawerOpen = useDrawerStatus() === 'open';
+    
+    //Function keeps navigation drawer closed
     useEffect(()=>{
-        if(loginPayload!=null){
+        
+        if(isDrawerOpen && isFocused){
+            navigation.closeDrawer()
+        }
+        
+    },[isDrawerOpen,navigation,isFocused])
+
+    useEffect(()=>{
+        if(loginPayload!=null && loginPayload==='success'){
             navigation.navigate("home")
         }
     },[loginPayload])

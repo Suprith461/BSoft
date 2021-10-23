@@ -46,11 +46,21 @@ export default function CategoryListComp({data,subCat1,selectedItem,setItem,call
 
    
      /*Function which will return a sub category element  takes in sub category name*/   
-    function SubCatElement({subCat,showAs}){
+    function SubCatElement({subCat,showAs,partiePlace,purchaseCommission}){
            
             return(
             
-            <TouchableOpacity  style={{height:40,borderBottomWidth:0.4,borderColor:'#DCDCDC',paddingVertical:10,backgroundColor:"white"}} onPress={()=>{setItem(subCat);handleClick()}}>
+            <TouchableOpacity  style={{height:40,borderBottomWidth:0.4,borderColor:'#DCDCDC',paddingVertical:10,backgroundColor:"white"}} 
+                onPress={()=>{
+                    setItem(subCat);
+                   
+                    if(subCat=="Select the Partie Name"){
+                        
+                       
+                       
+                    }
+                    
+                    handleClick()}}>
                 <Text style={{marginLeft:30,color:'black'}}>{showAs}</Text>
             </TouchableOpacity>);
         }
@@ -103,7 +113,7 @@ export default function CategoryListComp({data,subCat1,selectedItem,setItem,call
                     data={data}
                     showsVerticalScrollIndicator 
                     renderItem={({item})=>{        
-                        return(<SubCatElement subCat={item.subCategory} showAs={item.showAs}/>);}}
+                        return(<SubCatElement subCat={item.subCategory} showAs={item.showAs} partiePlace={item.partiePlace} purchaseCommission={item.purchaseCommission}/>);}}
                     keyExtractor={(item) => item.id}
             
                 />

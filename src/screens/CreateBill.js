@@ -22,6 +22,8 @@ export default function CreateBill({navigation}){
     const [subBillId,setSubBillId] = useState(0);
 
    
+
+   
     const quint_in = useRef()
     const kg_in =useRef()
     const rate_in = useRef()
@@ -53,7 +55,7 @@ export default function CreateBill({navigation}){
     const updatePartieBillFailure = useSelector(state=>state.finalBill.updatePartieBillFailure)
 
     //console.log("UpdatePArtieBillPayload",updatePartieBillPayload)
-    
+   
     
     useEffect(() => {
         if(fetchedPartiePayload==null){
@@ -67,6 +69,7 @@ export default function CreateBill({navigation}){
 
     useEffect(()=>{
         if(updatePartieBillPayload!=null){
+            console.log(updatePartieBillPayload)
             navigation.navigate("createBillFinal",{lorryNo:lorryNo});
         }
 
@@ -93,7 +96,7 @@ export default function CreateBill({navigation}){
     }
     
     function findSubBillTotal(qui,kg,rate){
-        return ((parseFloat(qui)+parseFloat(kg)/100)*rate).toFixed(2)
+        return ((parseFloat(qui)+parseFloat(kg)/100)*rate)
 
     }
 
@@ -242,13 +245,13 @@ export default function CreateBill({navigation}){
                     <View style={{height:120 ,marginVertical:10,backgroundColor:"white"}}>
                         
                         <View style={{flex:0.5,marginTop:10}}>
-                            <CategoryListComp selectedItem={partieName} setItem={setPartieName} data={fetchedPartiePayload} callback={()=>{}} subCat1="Select the Partie Name"/>
+                            <CategoryListComp selectedItem={partieName} setItem={setPartieName} data={fetchedPartiePayload} callback={()=>{}} subCat1="Select the Partie Name" />
                         </View>
                         
                         <View style={{flex:0.5,flexDirection:"row"}}>
                         
                             <View style={{flex:0.5}}>
-                                <CategoryListComp selectedItem={commodity} setItem={setCommodity} data={fetchedCommodityPayload} callback={()=>{}} subCat1="Select the commodity"/>
+                                <CategoryListComp selectedItem={commodity} setItem={setCommodity} data={fetchedCommodityPayload} callback={()=>{}} subCat1="Select the commodity" />
                             </View>
                         
                             <View style={{flex:0.5}}>
@@ -281,7 +284,7 @@ export default function CreateBill({navigation}){
                 <View style={{flex:0.18,borderWidth:0.2,borderColor:'#DCDCDC',backgroundColor:'white',marginVertical:15,marginHorizontal:20}}>
                 
                     <View style={{flex:0.5}}>
-                        <SubBillComp bags={purchaseTotal.tBags+' bags'} quintal={purchaseTotal.tQuintals+' quintal'} kg={purchaseTotal.tkg+' kg'} rate={'TOTAL'} total={purchaseTotal.totalAmount +' Rs'} style={{backgroundColor:"orange",borderWidth:0,marginHorizontal:0}}/>
+                        <SubBillComp bags={purchaseTotal.tBags+' bags'} quintal={purchaseTotal.tQuintals+' quintal'} kg={purchaseTotal.tkg+' kg'} rate={'TOTAL'} total={purchaseTotal.totalAmount.toFixed(2) +' Rs'} style={{backgroundColor:"orange",borderWidth:0,marginHorizontal:0}}/>
                     </View>
                 
                     <View style={{flex:0.5,flexDirection:'row'}}>

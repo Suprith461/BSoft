@@ -4,7 +4,7 @@ import React from 'react';
 import moment from 'moment';
 
 
-const PdfBill = (body,footer,partieName,lorryNo) => {
+const PdfBill = (body,footer,partieName,lorryNo,partiePlace) => {
     const dateToday = moment(Date()).format('DD-MM-YYYY')
     //console.log("Hello")
     //console.log("Body",body)
@@ -70,7 +70,7 @@ const PdfBill = (body,footer,partieName,lorryNo) => {
     //Partie Place
     doc.setFont('Roboto',"normal","200");
     doc.setFontSize(12);
-    doc.text("Karnataka Gadag 582101",119,105);
+    doc.text(partiePlace,119,105);
 
 
 

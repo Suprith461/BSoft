@@ -43,7 +43,7 @@ export function logIn(email,password){
         firebase.auth().signInWithEmailAndPassword(email,password)
         .then((user)=>{
             if(user){
-                dispatch(loginSuccess(user))
+                dispatch(loginSuccess("success"))
             }
         }).catch((error)=>{
             dispatch(loginFailure(error.message));

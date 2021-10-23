@@ -52,7 +52,11 @@ export default function CreateBillFinal({navigation,route}){
     const [totalBags,setTotalBags] = useState(0);
 
     const [updatingData,setUpdatingData] = useState(false);
-    const [partieName,setPartieName]=useState(null)
+    const [partieName,setPartieName]=useState(null);
+    const [partiePlace,setPartiePlace]=useState(null);
+    const [pCommissionPercent,setPCommissionPercent]=useState(null);
+
+  
 
     const updatedData={
         totalPurchase:totalPurchase,
@@ -78,7 +82,7 @@ export default function CreateBillFinal({navigation,route}){
             foot.push(temp.tQuintals)
             foot.push(temp.tkg)
             foot.push("Total")
-            foot.push(temp.totalAmount)
+            foot.push(parseFloat(temp.totalAmount).toFixed(2))
             foot.push("Grand Total")
             foot.push(grandTotal)
             return foot
@@ -89,17 +93,19 @@ export default function CreateBillFinal({navigation,route}){
     function createBody(){
         //console.log("Create Body");
         const fColumn = ["","D.Commission","Sess","Hamali","Weighman","Total","GST","Gunny Bags","Hamali","Cartage","Suttuli","Loading Hamali","Purchase commission","Postage","TOTAL"]
-        const gColumn = [totalPurchase,dallalCommission,sess,dHamali,weighMan,dTotal,gstInInr.toFixed(2),gunnyBags,hamali,cartage,suttuli,loadingHamali,purchaseCommission,postage]
+        const gColumn = [totalPurchase,dallalCommission,sess,dHamali,weighMan,dTotal,parseFloat(gstInInr).toFixed(2),gunnyBags,hamali,cartage,suttuli,loadingHamali,purchaseCommission,postage,grandTotal]
         if(doc!=null){
             const body=[]
             const smallBills = doc.smallBills;
 
             if(smallBills.length>=14){
+                var count = 0
                 smallBills.forEach((bill)=>{
-                    var count = 0
-                    var temp = []
+                   
+                    
                     
                     if(count<=14){
+                        var temp = []
                         temp.push(bill.bags+'')
                         temp.push(bill.quintal+'')
                         temp.push(bill.kg+'')
@@ -111,12 +117,13 @@ export default function CreateBillFinal({navigation,route}){
                         body.push(temp)
                         count+=1
                     }else{
-                        temp.push(bill.bags+'')
-                        temp.push(bill.quintal+'')
-                        temp.push(bill.kg+'')
-                        temp.push(bill.rate+'')
-                        temp.push(bill.total+'')
-                        body.push(temp)
+                        var temp4=[]
+                        temp4.push(bill.bags+'')
+                        temp4.push(bill.quintal+'')
+                        temp4.push(bill.kg+'')
+                        temp4.push(bill.rate+'')
+                        temp4.push(bill.total+'')
+                        body.push(temp4)
                         count+=1
                     }
                     
@@ -166,6 +173,15 @@ export default function CreateBillFinal({navigation,route}){
     const dateToday = moment(Date()).format('DD-MM-YYYY')
     const {lorryNo} = route.params; 
     const docName= lorryNo+dateToday
+
+    //setting up PurchaseCommission automatically
+    useEffect(()=>{
+        if(pCommissionPercent!=null && totalPurchase!=null){
+            setPurchaseCommission(((parseFloat(pCommissionPercent)/100)*totalPurchase).toFixed(2))
+        }
+    },[navigation,pCommissionPercent])
+
+
     useEffect(()=>{
 
         //PdfBill()
@@ -178,23 +194,36 @@ export default function CreateBillFinal({navigation,route}){
                 //console.log(doc.data())
                 setDoc(doc.data());
                 setPartieName(doc.data().partieName)
-                
-                //fetching the commodity data from database
-                db.collection('commodities').doc(doc.data().commodity).get().then((commodityData)=>{
-                    setFetchingDoc(false);
-                    setCommodityDoc(commodityData.data())
-                    //console.log("commodity data",commodityData.data())
+
+                //Fetch partie information first
+                db.collection('parties').doc(doc.data().partieName).get().then((partie)=>{
+                    
+                    setPartiePlace(partie.data().partiePlace);
+                    setPCommissionPercent(partie.data().pCommission)
+
+
+                    //Fetching commodity data
+                    db.collection('commodities').doc(doc.data().commodity).get().then((commodityData)=>{
+                        setFetchingDoc(false);
+                        setCommodityDoc(commodityData.data())
+                        
+                    }).catch((error)=>{
+                        setFetchingDoc(false);
+                        alert(error.message)
+                    })
+                   
                 }).catch((error)=>{
-                    setFetchingDoc(false);
-                    //console.log("alert during fetching commodity")
+                    setFetchingDoc(false)
                     alert(error.message)
                 })
-               
-            }).catch((error)=>{
-                setFetchingDoc(false)
-                //console.log("Alert during fetching doc")
-                alert(error.message)
-            })
+
+                }).catch((error)=>{
+                    setFetchingDoc(false)
+                    alert(error.message)
+                })
+
+                
+                
         }
     },[navigation])
 
@@ -206,11 +235,12 @@ export default function CreateBillFinal({navigation,route}){
             db.collection('bills').doc(docName).update({finalBill:updatedData}).then(()=>{
                 setUpdatingData(false);
                 
-                PdfBill(body,footer,partieName,lorryNo)
+                PdfBill(body,footer,partieName,lorryNo,partiePlace)
 
             }).catch((error)=>{
                 setUpdatingData(false)
                 //console.log("alert during updating the bill",error)
+                console.log(error)
                 alert(error.message)
             })
         }else{
@@ -224,17 +254,17 @@ export default function CreateBillFinal({navigation,route}){
         if(doc!=null && commodityDoc!=null){
             setTotalPurchase(parseFloat(doc.totalPurchase.totalAmount).toFixed(2));
             setTotalBags(parseFloat(doc.totalPurchase.tBags).toFixed(2))
-            setDallalCommission(parseFloat(doc.totalPurchase.totalAmount)*(parseFloat(commodityDoc.dCommission)/100));
-            setSess((parseFloat(doc.totalPurchase.totalAmount)*(parseFloat(commodityDoc.sess)/100)))
+            setDallalCommission((parseFloat(doc.totalPurchase.totalAmount)*(parseFloat(commodityDoc.dCommission)/100)).toFixed(2));
+            setSess((parseFloat(doc.totalPurchase.totalAmount)*(parseFloat(commodityDoc.sess)/100)).toFixed(2))
             setDHamali(parseFloat(doc.totalPurchase.tBags)*parseFloat(commodityDoc.hamali))
             setWeighMan(parseFloat(doc.totalPurchase.tBags)*parseFloat(commodityDoc.weighmanFee))
-            setDTotal(parseFloat(doc.totalPurchase.totalAmount)*(parseFloat(commodityDoc.dCommission)/100)+(parseFloat(doc.totalPurchase.totalAmount)*(parseFloat(commodityDoc.sess)))+parseFloat(doc.totalPurchase.tBags)*parseFloat(commodityDoc.hamali)+parseFloat(doc.totalPurchase.tBags)*parseFloat(commodityDoc.weighmanFee))
+            setDTotal((parseFloat(doc.totalPurchase.totalAmount)*(parseFloat(commodityDoc.dCommission)/100)+(parseFloat(doc.totalPurchase.totalAmount)*(parseFloat(commodityDoc.sess)))+parseFloat(doc.totalPurchase.tBags)*parseFloat(commodityDoc.hamali)+parseFloat(doc.totalPurchase.tBags)*parseFloat(commodityDoc.weighmanFee)+parseFloat(doc.totalPurchase.totalAmount)).toFixed(2))
         }
     },[doc,commodityDoc])
 
     useEffect(()=>{
         if(dTotal!=null){
-            setGstInr((parseFloat(gstPercent)/100)*dTotal)
+            setGstInr(((parseFloat(gstPercent)/100)*dTotal).toFixed(2))
         }
     },[gstPercent])
 
@@ -355,7 +385,7 @@ export default function CreateBillFinal({navigation,route}){
                         </View>
                     </View>
                     <View style={{flex:0.5}}>
-                        <Text style={{alignSelf:'center',fontWeight:'500',fontSize:20,paddingVertical:10}}>{dallalCommission.toFixed(2)}</Text>
+                        <Text style={{alignSelf:'center',fontWeight:'500',fontSize:20,paddingVertical:10}}>{parseFloat(dallalCommission).toFixed(2)}</Text>
                     </View>
                 </View>
 
@@ -366,7 +396,7 @@ export default function CreateBillFinal({navigation,route}){
                         </View>
                     </View>
                     <View style={{flex:0.5}}>
-                        <Text style={{alignSelf:'center',fontWeight:'500',fontSize:20,paddingVertical:10}}>{sess.toFixed(2)}</Text>
+                        <Text style={{alignSelf:'center',fontWeight:'500',fontSize:20,paddingVertical:10}}>{parseFloat(sess).toFixed(2)}</Text>
                     </View>
                 </View>
 
@@ -377,7 +407,7 @@ export default function CreateBillFinal({navigation,route}){
                         </View>
                     </View>
                     <View style={{flex:0.5}}>
-                        <Text style={{alignSelf:'center',fontWeight:'500',fontSize:20,paddingVertical:10}}>{dHamali.toFixed(2)}</Text>
+                        <Text style={{alignSelf:'center',fontWeight:'500',fontSize:20,paddingVertical:10}}>{parseFloat(dHamali).toFixed(2)}</Text>
                     </View>
                 </View>
 
@@ -388,7 +418,7 @@ export default function CreateBillFinal({navigation,route}){
                         </View>
                     </View>
                     <View style={{flex:0.5}}>
-                        <Text style={{alignSelf:'center',fontWeight:'500',fontSize:20,paddingVertical:10}}>{weighMan.toFixed(2)}</Text>
+                        <Text style={{alignSelf:'center',fontWeight:'500',fontSize:20,paddingVertical:10}}>{parseFloat(weighMan).toFixed(2)}</Text>
                     </View>
                 </View>
 
@@ -400,7 +430,7 @@ export default function CreateBillFinal({navigation,route}){
                         </View>
                     </View>
                     <View style={{flex:0.5}}>
-                        <Text style={{alignSelf:'center',fontWeight:'500',fontSize:20,paddingVertical:10}}>{dTotal.toFixed(2)}</Text>
+                        <Text style={{alignSelf:'center',fontWeight:'500',fontSize:20,paddingVertical:10}}>{parseFloat(dTotal).toFixed(2)}</Text>
                     </View>
                 </View>
 
@@ -411,7 +441,7 @@ export default function CreateBillFinal({navigation,route}){
                         </View>
                     </View>
                     <View style={{flex:0.5}}>
-                        <Text style={{alignSelf:'center',fontWeight:'500',fontSize:20,paddingVertical:10}}>{(setGstInr!=0)?gstInInr.toFixed(2):0}</Text>
+                        <Text style={{alignSelf:'center',fontWeight:'500',fontSize:20,paddingVertical:10}}>{(gstInInr!=0)?parseFloat(gstInInr).toFixed(2):0}</Text>
                     </View>
                 </View>
 

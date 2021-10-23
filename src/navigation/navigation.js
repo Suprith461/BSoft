@@ -143,7 +143,7 @@ export default function NavWithDrawer(){
     
 
         <navWithDrawer.Navigator drawerContent={props => <CustomDrawerContent {...props}/>}>
-        <navWithDrawer.Screen  name = "logIn" component={LogInScreen}  />
+        <navWithDrawer.Screen  name = "logIn" component={LogInScreen}   options={{drawerLockMode:"locked-closed"}}/>
         <navWithDrawer.Screen  name = "home" component={HomeStackScreen} options={{title:"Bsoft",fontSize:28}}/>
         <navWithDrawer.Screen  name = "commodity" component={CommoditiesStackScreen} options={{title:"Create/Edit commodities",fontSize:28}}/>
         <navWithDrawer.Screen  name = "parties" component={PartiesStackScreen} options={{title:"Add/Edit partie",fontSize:28}}/>
