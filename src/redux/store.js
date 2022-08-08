@@ -7,7 +7,7 @@ import rootReducer from './rootReducer'
 
 const store = createStore(
   rootReducer,
-  //composeWithDevTools(applyMiddleware(logger, thunk))
+  composeWithDevTools(applyMiddleware( thunk))
 )
 // Serves index.html for requests to both "/foo" and "/foo/**"
         // Using "/foo/**" only matches paths like "/foo/xyz", but not "/foo"
